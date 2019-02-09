@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Agreeabuddy</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+        integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <div class="container">
+        <!--Modal-->
+        <div class="modal" tabindex="-1" role="dialog" id='modFriend'>
+            <div class="modal-dialog" role="document">
+                <div class="modal-content text-center">
+                    <div class="modal-header text-center">
+                        <!--Name goes here-->
+                        <h5 class="modal-title" id='modName'></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--Picture goes here-->
+                        <img src="" alt="picture" id='modPic' style='width: 200px'>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Jumbotron-->
+        <div class="jumbotron text-center">
+            <h1>
+                Survey
+            </h1>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Name</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Default" aria-describedby="nameInput"
+                    placeholder="What's your name?" id="nameInput" required>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">Picture</span>
+                </div>
+                <input type="text" class="form-control" aria-label="Default" aria-describedby="picture"
+                    placeholder="Upload a photo URL" id="picture" required>
+            </div>
+        </div>
+        <div id="qBox">
+
+        </div>
+        <button class='btn btn-light' id='submitBtn'>Submit</button>
+    </div>
+    <script>
+        const questions = [
+            'You like big vooty',
+            'Earth is flat',
+            'You made me use 10% of my power',
+            'No one likes you',
+            'You were bullied in middle school',
+            'Legos are the same as Megablocks',
+            'Why buy cars when you can lease them forever',
+            "Moon's haunted",
+            'You are not as smart as you look',
+            'Obama and Trump would have great kids'
+        ];
+        var qbox = $("#qBox");
+        var submit = $("#submitBtn");
+
+        questions.forEach((x, i) => {
+            let q = `
+                <div>
+                    <h2>Question ${i + 1}</h2>
+                    <p>${x}</p>
+                    <select class="form-control mb-3" id='q${i + 1}' required>
+                        <option selected>Choose...</option>
+                        <option value='1'>1 Strongly disagree</option>
+                        <option value='2'>2 Disagree</option>
+                        <option value='3'>3 Neutral</option>
+                        <option value='4'>4 Agree</option>
+                        <option value='5'>5 Strongly Agree</option>
+                    </select>
+                </div>
+                `;
+            qbox.append(q);
+        });
+
+        submit.click(e => {
+            e.preventDefault();
+            var name = $("#nameInput").val().trim();
+            var pic = $("#picture").val().trim();
+            var score = [];
+            questions.forEach((x, i) => {
+                let q = $(`#q${i + 1}`).val().trim();
+                score.push(q);
+            });
+            let newfriend = {
+                "name": name,
+                "pic": pic,
+                "score": score
+            };
+            $.post('/api/friends', newfriend).then(data => {
+                $('#modName').text(data.name);
+                $('#modPic').attr('src', data.pic);
+                $('#modFriend').modal('toggle');
+            });
+        });
+    </script>
+
+    <!-- <script src="../data/app.js"></script> -->
+</body>
+
+</html>
