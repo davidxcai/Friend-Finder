@@ -13,5 +13,5 @@ A web app  that allows users to fill out a survey and matches a friend with the 
 * MySQL
 * Hosted on Heroku
 
-# Made By
+## Made By
 Dafydd Zephyr
